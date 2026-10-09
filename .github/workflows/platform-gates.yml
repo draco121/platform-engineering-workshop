@@ -5,7 +5,7 @@
 #     security-gate:
 #       uses: draco121/platform-engineering-workshop/.github/workflows/platform-gates.yml@main
 #
-# Every service created from https://github.com/draco121/java-service-template does exactly that.
+# Every service created from https://github.com/draco121/java-template-service does exactly that.
 # Change a rule here once -> every team's pipeline gets it on the next run.
 name: platform-gates
 

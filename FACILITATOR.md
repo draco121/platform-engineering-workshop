@@ -3,7 +3,7 @@
 How to run *Guardrails & Golden Paths* as two sessions. Everything the room needs lives on GitHub:
 
 - **This repo** (Session 1): the demo app, the security gate, both lab sheets, and the central gate workflow.
-- **[java-service-template](https://github.com/draco121/java-service-template)** (Session 2): the golden-path template repository.
+- **[java-template-service](https://github.com/draco121/java-template-service)** (Session 2): the golden-path template repository.
 
 Each session has one slide deck with speaker notes on every slide.
 
@@ -42,7 +42,7 @@ Each session has one slide deck with speaker notes on every slide.
 
 **A week before**
 - [ ] Share this repo's link and ask students to do the "Before the workshop" steps in `README.md`.
-- [ ] Confirm `java-service-template` is marked as a template (**Settings → General → Template repository**).
+- [ ] Confirm `java-template-service` is marked as a template (**Settings → General → Template repository**).
 - [ ] Do one dry run of Lab 2 yourself: Use this template → watch bootstrap and ci go green. Delete the test repo after.
 - [ ] Fill in the bracketed placeholders in the decks (your name, contact).
 - [ ] Optional: turn on **Discussions** in this repo for questions and feedback.

@@ -31,7 +31,7 @@
 Same rules as Lab 1: try first, then open "Check your answer", and raise your hand when your team clears a mission.
 
 ### Mission 2.1 - One click
-1. Open https://github.com/draco121/java-service-template and look around: `template/` holds the
+1. Open https://github.com/draco121/java-template-service and look around: `template/` holds the
    Cookiecutter template, `.github/workflows/` holds two workflows.
 2. Click **Use this template → Create a new repository**. Name it after a service, for example
    `coupon-service` (any name works). Click **Create repository**.
@@ -43,7 +43,7 @@ Same rules as Lab 1: try first, then open "Check your answer", and raise your ha
 
 For a repo named `coupon-service` you get `# Coupon Service`, artifactId `coupon-service` and Java
 package `dev.workshop.couponservice`. Look at the commit history: the second commit,
-*"Bootstrap Coupon Service from java-service-template"*, was made by the bot, not by you.
+*"Bootstrap Coupon Service from java-template-service"*, was made by the bot, not by you.
 </details>
 
 ### Mission 2.2 - Born green
@@ -122,8 +122,8 @@ Look up "template drift".)
 ## Bonus round
 
 1. **The command-line path.** Same template, no GitHub button:
-   `pip install cookiecutter && cookiecutter gh:draco121/java-service-template --directory template`
-2. **Extend the golden path.** Fork `java-service-template`, add a question to
+   `pip install cookiecutter && cookiecutter gh:draco121/java-template-service --directory template`
+2. **Extend the golden path.** Fork `java-template-service`, add a question to
    `template/cookiecutter.json` (for example `"include_database": ["no", "yes"]`) and use it in
    `pom.xml` with `{% if cookiecutter.include_database == "yes" %} ... {% endif %}`.
    In your fork, tick **Settings → General → Template repository**, then use *your* template.

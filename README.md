@@ -19,7 +19,7 @@ No prior security or DevOps experience needed.
 | Session | Topic | Lab | Where |
 |---|---|---|---|
 | 1 | What is platform engineering? Software vulnerabilities, and how to detect and fix them | [Lab 1 · Build a security gate](labs/LAB-1-security-gate.md) | this repo |
-| 2 | Rapid microservice development with templates, and open problems | [Lab 2 · From one click to a green pipeline](labs/LAB-2-golden-path.md) | [java-service-template](https://github.com/draco121/java-service-template) |
+| 2 | Rapid microservice development with templates, and open problems | [Lab 2 · From one click to a green pipeline](labs/LAB-2-golden-path.md) | [java-template-service](https://github.com/draco121/java-template-service) |
 
 ## What's inside
 
@@ -59,7 +59,7 @@ Then open [`labs/LAB-1-security-gate.md`](labs/LAB-1-security-gate.md) and start
 ```
  Session 2                                         Session 1
  ─────────                                         ─────────
- java-service-template  ── "Use this template" ──▶  your-new-service
+ java-template-service  ── "Use this template" ──▶  your-new-service
    (golden path)              + bootstrap Action      ci.yml: build + tests + formatting
                                                           │
                                                           ▼
