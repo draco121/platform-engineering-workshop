@@ -1,0 +1,11 @@
+target/
+deps.txt
+__pycache__/
+*.pyc
+portal/data/
+.osv-ignore.json
+osv-report.json
+license-report.json
+.idea/
+.vscode/
+.DS_Store

@@ -1,0 +1,24 @@
+{
+  "service_name": "Order Service",
+  "service_slug": "{{ cookiecutter.service_name.lower().strip().replace(' ', '-') }}",
+  "package_name": "dev.workshop.{{ cookiecutter.service_slug.replace('-', '') }}",
+  "description": "A microservice generated from the platform golden path.",
+  "owner_team": "team-rocket",
+  "java_version": ["21", "25", "17"],
+  "server_port": "8080",
+  "include_example_api": ["yes", "no"],
+  "include_dockerfile": ["yes", "no"],
+  "platform_gates_repo": "draco121/platform-engineering-workshop",
+  "__prompts__": {
+    "service_name": "What is your service called?",
+    "service_slug": "Folder / artifact name",
+    "package_name": "Java package",
+    "description": "One line: what does it do?",
+    "owner_team": "Which team owns it? (goes into the service catalog)",
+    "java_version": "Java version",
+    "server_port": "HTTP port",
+    "include_example_api": "Add an example REST endpoint?",
+    "include_dockerfile": "Add a production Dockerfile?",
+    "platform_gates_repo": "GitHub repo (owner/name) that hosts the central platform gates"
+  }
+}

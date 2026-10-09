@@ -1,0 +1,76 @@
+# THE CENTRAL GATES.
+# Owned by the platform team, reused by every service:
+#   jobs:
+#     platform-gates:
+#       uses: <org>/platform-workshop/.github/workflows/platform-gates.yml@main
+#
+# Change a rule here once -> every team's pipeline gets it on the next run.
+name: platform-gates
+
+on:
+  workflow_call:
+    inputs:
+      platform_repo:
+        description: "owner/name of the repo that hosts these gates"
+        type: string
+        required: true
+      java_version:
+        type: string
+        default: "21"
+      fail_on:
+        description: "Lowest vulnerability severity that blocks a release"
+        type: string
+        default: "HIGH"
+
+jobs:
+  security-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.platform_repo }}
+          path: .platform
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java_version }}
+          cache: maven
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Resolve the full dependency tree
+        run: mvn -B -q dependency:list -DoutputFile=deps.txt -DincludeScope=runtime
+      - name: Security gate (OSV.dev)
+        run: python .platform/gates/osv_gate.py --deps-file deps.txt --fail-on ${{ inputs.fail_on }} --json-out osv-report.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: osv-report
+          path: osv-report.json
+
+  license-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.platform_repo }}
+          path: .platform
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java_version }}
+          cache: maven
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Resolve the full dependency tree
+        run: mvn -B -q dependency:list -DoutputFile=deps.txt -DincludeScope=runtime
+      - name: License gate (deps.dev)
+        run: python .platform/gates/license_gate.py --deps-file deps.txt --policy .platform/gates/license-policy.json --json-out license-report.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: license-report
+          path: license-report.json

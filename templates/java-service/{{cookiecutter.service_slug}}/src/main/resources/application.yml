@@ -1,0 +1,38 @@
+# Platform defaults. Every service generated from the golden path gets the same,
+# so dashboards, alerts and log searches work the same way for every team.
+spring:
+  application:
+    name: {{ cookiecutter.service_slug }}
+  mvc:
+    problemdetails:
+      enabled: true # errors come back as RFC 9457 JSON, never as HTML stack traces
+
+server:
+  port: {{ cookiecutter.server_port }}
+  shutdown: graceful # finish in-flight requests before stopping (safe deploys)
+
+logging:
+  structured:
+    format:
+      console: ecs # one JSON object per log line: easy to search in any log tool
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true # /actuator/health/liveness and /readiness for Kubernetes
+  tracing:
+    sampling:
+      probability: 1.0 # trace every request in dev; the platform lowers this in prod
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+
+info:
+  owner: {{ cookiecutter.owner_team }}
