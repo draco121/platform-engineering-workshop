@@ -1,8 +1,8 @@
-# Runs both gates against the demo app on every push.
+# Runs the security gate against the demo app on every push.
 #
 # On the original repository this run is RED ON PURPOSE: the demo app ships
-# vulnerable and AGPL-licensed libraries, and the gates block it.
-# Lab 2's CI challenge: fork the repo, fix demo-app/pom.xml, and make it green.
+# libraries with known vulnerabilities, and the gate blocks it.
+# Lab 1's CI challenge: fork the repo, fix demo-app/pom.xml, and make it green.
 name: gates
 
 on:
@@ -34,27 +34,3 @@ jobs:
         with:
           name: osv-report
           path: osv-report.json
-
-  license-gate:
-    name: License gate (deps.dev)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: "21"
-          cache: maven
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-      - name: List every library the demo app ships (direct + transitive)
-        working-directory: demo-app
-        run: mvn -B -q dependency:list -DoutputFile=deps.txt -DincludeScope=runtime
-      - name: License gate
-        run: python gates/license_gate.py --deps-file demo-app/deps.txt --json-out license-report.json
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: license-report
-          path: license-report.json

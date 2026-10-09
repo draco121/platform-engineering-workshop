@@ -1,8 +1,8 @@
 """
 depreader.py - turn a Java project into a plain list of dependencies.
 
-Both gates (security + license) start the same way: "what libraries does this
-project actually use?" This module answers that question in two ways:
+Every dependency gate starts the same way: "what libraries does this project
+actually use?" This module answers that question in two ways:
 
   1. read_pom(path)        -> reads the <dependencies> you wrote in pom.xml
                               (direct dependencies only, no Maven needed)

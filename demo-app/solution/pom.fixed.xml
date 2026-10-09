@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  FACILITATOR SOLUTION - "Old Faithful" after Lab 1 + Lab 2 fixes.
-  Both gates should report PASSED for this file (as of October 2026).
+  SOLUTION - "Old Faithful" after the Lab 1 fixes.
+  The security gate should report PASSED for this file (as of October 2026).
   Copy it over ../pom.xml to show the green build:  cp solution/pom.fixed.xml pom.xml
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -56,19 +56,14 @@
       <version>2.11.0</version>
     </dependency>
 
-    <!-- FIX: iText 5 is AGPL-3.0 -> swapped for Apache PDFBox (Apache-2.0). -->
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox</artifactId>
-      <version>3.0.8</version>
-    </dependency>
 
-    <!-- FIX: the old MySQL driver was relocated, has an unfixed advisory and a
-         non-standard license -> swapped for the PostgreSQL driver (BSD-2-Clause). -->
+    <!-- FIX: mysql:mysql-connector-java was RELOCATED (renamed). The old name gets no
+         more releases, so its advisory has "no fixed version". The driver lives on as
+         com.mysql:mysql-connector-j. -->
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.7.14</version>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.7.0</version>
     </dependency>
 
     <!-- Test-only dependency: not shipped to production. -->

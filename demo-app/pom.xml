@@ -3,8 +3,8 @@
   "Old Faithful" - the deliberately outdated demo app for the workshop.
 
   This project compiles and runs, but several of its dependencies are
-  OLD on purpose. Your job in Lab 1 and Lab 2 is to build the robots
-  (gates) that catch them, then fix the pom so the gates go green.
+  OLD on purpose. Your job in Lab 1 is to build the robot
+  (the security gate) that catches them, then fix the pom so the gates go green.
 
   DO NOT copy these versions into a real project.
 -->
@@ -60,14 +60,8 @@
       <version>2.11.0</version>
     </dependency>
 
-    <!-- PDF generation. Look closely at the LICENSE of this one in Lab 2. -->
-    <dependency>
-      <groupId>com.itextpdf</groupId>
-      <artifactId>itextpdf</artifactId>
-      <version>5.5.13.3</version>
-    </dependency>
 
-    <!-- Database driver. Its license metadata is not a standard SPDX id. -->
+    <!-- Database driver. Look closely at what the security gate says about fixing this one. -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>

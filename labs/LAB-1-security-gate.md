@@ -1,4 +1,4 @@
-# Lab 1 - Build a Security Gate (40 min)
+# Lab 1 - Build a Security Gate (40 min + 15 min CI challenge)
 
 > **The story.** It's December 2021. A logging library used by millions of Java apps,
 > `log4j-core`, turns out to let attackers run code on your server by sending one
@@ -102,11 +102,12 @@ fixes each package. Edit `../demo-app/pom.xml` and upgrade the libraries.
 Keep upgrading until everything you can fix is green.
 <details><summary>Check your answer</summary>
 
-`1.10.0`. A pom that passes both gates (as of October 2026) is in `demo-app/solution/pom.fixed.xml`.
+`1.10.0`. One package will refuse to turn green whatever version you try: that's Mission 1.7.
+A pom that passes the gate (as of October 2026) is in `demo-app/solution/pom.fixed.xml`.
 </details>
 
 ### Mission 1.6 - Boss level: the hidden ones
-Your `pom.xml` lists 7 libraries. But Maven downloads more. Find out what you *really* ship:
+Your `pom.xml` lists 6 libraries. But Maven downloads more. Find out what you *really* ship:
 
 ```bash
 cd ../demo-app
@@ -122,6 +123,40 @@ Some vulnerable packages are not in your pom at all. One of them is pulled in by
 <details><summary>Check your answer</summary>
 
 `protobuf-java`.
+</details>
+
+### Mission 1.7 - Boss level: the package that moved
+`mysql:mysql-connector-java` has a HIGH advisory, but the gate says
+*"no fixed version published"*. No upgrade will ever fix it under this name. Why?
+Detective work: open its page on https://central.sonatype.com or https://mvnrepository.com.
+The package didn't die - it **moved**.
+
+**Checkpoint:** what are its new coordinates (`groupId:artifactId`)? Put them in your pom and the
+last red line disappears.
+<details><summary>Check your answer</summary>
+
+`com.mysql:mysql-connector-j`. Maven calls this a *relocation*. Renamed packages are a real headache
+for security tooling: the old name stays vulnerable forever, and nobody upgrades it.
+</details>
+
+## The CI challenge: make GitHub say green (15 min)
+
+This repository runs the **security gate on GitHub Actions** on every push (`.github/workflows/gates.yml`).
+On the original repo the run is red on purpose: Old Faithful is blocked. Your job is to turn it green.
+
+1. Click **Fork** on https://github.com/draco121/platform-engineering-workshop (you need a free GitHub account).
+2. In your fork, open the **Actions** tab and click the button to enable workflows.
+3. Edit `demo-app/pom.xml` in your fork (on github.com: open the file, click the pencil icon) with
+   your fixes from Missions 1.5 and 1.7. Commit to `main`.
+4. Watch the **Actions** tab. The gate runs against the *full* dependency tree, hidden libraries included.
+
+**Checkpoint:** a green check mark next to your commit. Click into the run to read the gate output,
+and download the JSON report from the run's **Artifacts** section.
+<details><summary>Stuck?</summary>
+
+Copy `demo-app/solution/pom.fixed.xml` over `demo-app/pom.xml`. If the gate is still red,
+a new advisory may have appeared since October 2026: the log tells you the version to upgrade to.
+That is the lesson of this whole lab.
 </details>
 
 ## Bonus round

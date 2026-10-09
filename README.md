@@ -1,93 +1,85 @@
 # Platform Engineering Workshop: Guardrails & Golden Paths
 
-A hands-on lab kit for learning platform engineering by building three things yourself:
+A two-session, hands-on workshop for people meeting platform engineering for the first time.
+You build the two things every platform team ships:
 
-1. **A security gate** that blocks a release when it ships a library with a known vulnerability (using [OSV.dev](https://osv.dev)).
-2. **A license gate** that blocks libraries whose license your company can't accept (using [deps.dev](https://deps.dev)).
-3. **A golden-path template** that creates a production-ready Spring Boot microservice in one command (using [Cookiecutter](https://github.com/cookiecutter/cookiecutter)).
+1. **A guardrail: a security gate** that blocks a release when it ships a library with a known
+   vulnerability (using [OSV.dev](https://osv.dev)), running in GitHub Actions.
+2. **A golden path: a service template** on GitHub. One click on **Use this template** gives you a
+   personalised Spring Boot microservice whose pipeline already runs that security gate.
 
-Written for people meeting these ideas for the first time. No prior security or DevOps experience needed.
+No prior security or DevOps experience needed.
 
-> ⚠️ **`demo-app/` is vulnerable on purpose.** It pins old library versions (Log4Shell, Text4Shell and friends) so the gates have something to catch.
+> ⚠️ **`demo-app/` is vulnerable on purpose.** It pins old library versions (Log4Shell, Text4Shell and friends) so the gate has something to catch.
 > It's harmless as a lab exercise, but never copy its versions into a real project. Expect GitHub security alerts on this repo,
-> and a **red X on the Actions run**: the gates are blocking the demo app, which is the point. Lab 2 shows you how to make it green in your own fork.
+> and a **red X on the Actions run**: the gate is blocking the demo app, which is the point. Lab 1 shows you how to make it green in your own fork.
+
+## The two sessions
+
+| Session | Topic | Lab | Where |
+|---|---|---|---|
+| 1 | What is platform engineering? Software vulnerabilities, and how to detect and fix them | [Lab 1 · Build a security gate](labs/LAB-1-security-gate.md) | this repo |
+| 2 | Rapid microservice development with templates, and open problems | [Lab 2 · From one click to a green pipeline](labs/LAB-2-golden-path.md) | [java-service-template](https://github.com/draco121/java-service-template) |
 
 ## What's inside
 
-| Folder | What it is | Used in |
-|---|---|---|
-| `demo-app/` | **Old Faithful**, a tiny Java app with deliberately outdated, risky dependencies | Labs 1 + 2 |
-| `gates/` | The security gate, the license gate, starter files with TODOs, and the license policy | Labs 1 + 2 |
-| `templates/java-service/` | A Cookiecutter golden-path template for a Spring Boot 4 microservice | Lab 3 |
-| `labs/` | Step-by-step mission sheets for each lab | All |
-| `.github/workflows/gates.yml` | Runs both gates on the demo app on every push (red on purpose) | Lab 2 CI challenge |
-| `.github/workflows/platform-gates.yml` | The *central* reusable CI workflow every generated service calls | Lab 3 |
-| `FACILITATOR.md` | Run sheets, hints and troubleshooting for whoever runs the workshop | - |
+| Path | What it is |
+|---|---|
+| `demo-app/` | **Old Faithful**, a tiny Java app with deliberately outdated, vulnerable dependencies |
+| `gates/osv_gate.py` | The finished security gate |
+| `gates/starter_osv_gate.py` | The Lab 1 starter with 3 TODOs |
+| `labs/` | Mission sheets for both labs, answers folded under "Check your answer" |
+| `.github/workflows/gates.yml` | Runs the security gate on the demo app on every push (red on purpose) |
+| `.github/workflows/platform-gates.yml` | The *central* gate every service created from the template calls |
+| `FACILITATOR.md` | Run sheets, hints and troubleshooting for whoever runs the workshop |
 
 ## Before the workshop (10 minutes)
 
 ```bash
 python --version        # 3.9 or newer
-java -version           # 17 or newer   (Lab 3 and the Lab 1 boss level)
+java -version           # 17 or newer   (Lab 1 boss level, Lab 2)
 mvn -v                  # 3.9 or newer
-pip install cookiecutter
-
-git clone https://github.com/draco121/platform-engineering-workshop.git
-cd platform-engineering-workshop
-
-# Warm up Maven's cache so the venue Wi-Fi doesn't have to:
-cd demo-app && mvn -q dependency:resolve && cd ..
-cd templates && cookiecutter --no-input java-service && cd order-service && mvn -q verify && cd ../..
+git --version
 ```
 
-If all of that ran without errors, you're ready.
+And create a free [GitHub](https://github.com) account if you don't have one.
 
-## Quick start
+## Quick start (Session 1)
 
 ```bash
-cd gates
-python osv_gate.py ../demo-app/pom.xml        # security gate  -> BLOCKED
-python license_gate.py ../demo-app/pom.xml    # license gate   -> BLOCKED
+git clone https://github.com/draco121/platform-engineering-workshop.git
+cd platform-engineering-workshop/gates
+python osv_gate.py ../demo-app/pom.xml        # -> GATE: BLOCKED
 ```
 
-Then open [`labs/LAB-1-security-gate.md`](labs/LAB-1-security-gate.md) and start with the starter files.
-
-| Lab | Time | You build |
-|---|---|---|
-| [Lab 1](labs/LAB-1-security-gate.md) | 40 min | `gates/starter_osv_gate.py` → a working security gate |
-| [Lab 2](labs/LAB-2-license-gate.md) | 45 min | `gates/starter_license_gate.py` → a working license gate, then both gates green on GitHub Actions in your fork |
-| [Lab 3](labs/LAB-3-golden-path.md) | 45 min | Your own microservice from the golden-path template |
-
-Every mission ends with a checkpoint, and the answers are folded under "Check your answer" in the lab sheets.
-Stuck? The finished versions are `gates/osv_gate.py` and `gates/license_gate.py`. Try not to peek too early.
+Then open [`labs/LAB-1-security-gate.md`](labs/LAB-1-security-gate.md) and start with `starter_osv_gate.py`.
 
 ## How the pieces fit
 
 ```
- developer runs:  cookiecutter java-service          (golden path, Lab 3)
-        |
-        v
- new service repo  --push-->  ci.yml: build + test + formatting
-                                  |
-                                  v
-                      platform-gates.yml (central, owned by the platform team)
-                         |-- osv_gate.py      -> BLOCK on HIGH/CRITICAL vulnerabilities  (Lab 1)
-                         `-- license_gate.py  -> BLOCK on denied licenses               (Lab 2)
-                                  |
-                                  v
-                               deploy
+ Session 2                                         Session 1
+ ─────────                                         ─────────
+ java-service-template  ── "Use this template" ──▶  your-new-service
+   (golden path)              + bootstrap Action      ci.yml: build + tests + formatting
+                                                          │
+                                                          ▼
+                                    platform-gates.yml (central, in this repo)
+                                          └─ osv_gate.py → BLOCK on HIGH/CRITICAL
+                                                          │
+                                                          ▼
+                                                        deploy
 ```
 
-The gates use only the Python standard library, and both data sources are free with no API key.
+The gate uses only the Python standard library, and OSV.dev is free with no API key.
 
 > Vulnerability data changes daily. The numbers you see may differ from the slides. That's the lesson:
 > a dependency that was safe last month can be blocked today.
 
 ## Ideas for going further
 
-- Teach `depreader.py` to read `package.json` or `requirements.txt`, so the same gates work for Node.js or Python.
+- Teach `depreader.py` to read `package.json` or `requirements.txt`, so the same gate works for Node.js or Python.
 - Add a "new findings only" mode that blocks just the issues a pull request introduces.
-- Build a Node.js or Python golden-path template.
+- Build a Node.js or Python template repository.
 - Try the production-grade tools: [OSV-Scanner](https://google.github.io/osv-scanner/), [Trivy](https://trivy.dev), [Backstage](https://backstage.io).
 
 Pull requests welcome.

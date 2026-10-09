@@ -1,9 +1,11 @@
-# THE CENTRAL GATES.
-# Owned by the platform team, reused by every service:
-#   jobs:
-#     platform-gates:
-#       uses: <org>/platform-workshop/.github/workflows/platform-gates.yml@main
+# THE CENTRAL GATE.
+# Owned by the platform team, reused by every service. A service's CI calls it like this:
 #
+#   jobs:
+#     security-gate:
+#       uses: draco121/platform-engineering-workshop/.github/workflows/platform-gates.yml@main
+#
+# Every service created from https://github.com/draco121/java-service-template does exactly that.
 # Change a rule here once -> every team's pipeline gets it on the next run.
 name: platform-gates
 
@@ -11,12 +13,9 @@ on:
   workflow_call:
     inputs:
       platform_repo:
-        description: "owner/name of the repo that hosts these gates"
+        description: "owner/name of the repo that hosts the gate scripts"
         type: string
-        required: true
-      java_version:
-        type: string
-        default: "21"
+        default: "draco121/platform-engineering-workshop"
       fail_on:
         description: "Lowest vulnerability severity that blocks a release"
         type: string
@@ -24,53 +23,34 @@ on:
 
 jobs:
   security-gate:
+    name: Security gate (OSV.dev)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/checkout@v7
+      - name: Check out the service
+        uses: actions/checkout@v7
+      - name: Check out the platform's gate scripts
+        uses: actions/checkout@v7
         with:
           repository: ${{ inputs.platform_repo }}
           path: .platform
+      - name: Use the Java version the service asks for (.java-version), or 21
+        run: |
+          if [ ! -f .java-version ]; then echo 21 > .java-version; fi
+          echo "Java $(cat .java-version)"
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: ${{ inputs.java_version }}
+          java-version-file: .java-version
           cache: maven
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - name: Resolve the full dependency tree
+      - name: List every library the service ships (direct + transitive)
         run: mvn -B -q dependency:list -DoutputFile=deps.txt -DincludeScope=runtime
-      - name: Security gate (OSV.dev)
+      - name: Security gate
         run: python .platform/gates/osv_gate.py --deps-file deps.txt --fail-on ${{ inputs.fail_on }} --json-out osv-report.json
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: osv-report
           path: osv-report.json
-
-  license-gate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/checkout@v7
-        with:
-          repository: ${{ inputs.platform_repo }}
-          path: .platform
-      - uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: ${{ inputs.java_version }}
-          cache: maven
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-      - name: Resolve the full dependency tree
-        run: mvn -B -q dependency:list -DoutputFile=deps.txt -DincludeScope=runtime
-      - name: License gate (deps.dev)
-        run: python .platform/gates/license_gate.py --deps-file deps.txt --policy .platform/gates/license-policy.json --json-out license-report.json
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: license-report
-          path: license-report.json
